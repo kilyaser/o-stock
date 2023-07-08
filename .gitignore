@@ -2,3 +2,6 @@
 /configserver/mvnw.cmd
 /configserver/mvnw
 /configserver/.mvn/
+/licensing-service/mvnw.cmd
+/licensing-service/mvnw
+/licensing-service/.mvn/
