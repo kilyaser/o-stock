@@ -4,6 +4,7 @@ import com.arcadag.license.config.ServiceConfig;
 import com.arcadag.license.model.License;
 import com.arcadag.license.repository.LicenseRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -11,13 +12,16 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class LicenseService {
     private final LicenseRepository licenseRepository;
     private final MessageSource messages;
     private final ServiceConfig config;
 
     public License getLicense(String licenseId, String organizationId) {
+        log.info("licenseId: {}, organizationId: {}", licenseId, organizationId);
         License license = licenseRepository.findByOrganizationIdAndLicenseId(organizationId, licenseId);
+        log.info("license: {}", license);
         if (null == license) {
             throw new IllegalArgumentException(
                     String.format(
