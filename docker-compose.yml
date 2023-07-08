@@ -1,0 +1,38 @@
+version: '3.7'
+
+services:
+  database:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "Asdfg6hj"
+      POSTGRES_DB: "ostock_dev"
+
+  configserver:
+    image: configserver:0.0.1-SNAPSHOT
+    ports:
+      - "8071:8071"
+    networks:
+      backend:
+        aliases:
+          - "configserver"
+
+  licensingservice:
+    image: ostock/licensing-service:latest
+
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: "dev"
+      SPRING_CLOUD_CONFIG_URI: http://configserver:8071
+      CONFIGSERVER_PORT: "8071"
+
+    networks:
+      backend:
+        aliases:
+          - "licenseservice"
+networks:
+  backend:
+    driver: bridge
