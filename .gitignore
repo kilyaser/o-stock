@@ -8,3 +8,6 @@
 /eurekaserver/mvnw.cmd
 /eurekaserver/mvnw
 /eurekaserver/.mvn/
+/organization-service/mvnw.cmd
+/organization-service/mvnw
+/organization-service/.mvn/
