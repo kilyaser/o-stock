@@ -35,16 +35,32 @@ services:
       backend:
         aliases:
           - "licenseservice"
-#
-#  eurekaserver:
-#    image: ostock/eurekaserver:0.0.1-SNAPSHOT
-#    ports:
-#      - "8070:8070"
-#
-#    networks:
-#      backend:
-#        aliases:
-#          - "eurekaserver"
+
+  eurekaserver:
+    image: ostock/eurekaserver:0.0.1-SNAPSHOT
+    ports:
+      - "8070:8070"
+
+    networks:
+      backend:
+        aliases:
+          - "eurekaserver"
+
+  organizationservice:
+    image: ostock/organization-service:0.0.1-SNAPSHOT
+    environment:
+      PROFILE: "dev"
+      CONFIGSERVER_URI: "http://configserver:8071"
+      CONFIGSERVER_PORT: "8071"
+      DATABASESERVER_PORT: "5432"
+
+    depends_on:
+      configserver:
+        condition: service_started
+    ports:
+      - "8081:8081"
+    networks:
+      - backend
 
 networks:
   backend:
