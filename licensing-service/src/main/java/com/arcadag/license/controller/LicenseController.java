@@ -3,10 +3,14 @@ package com.arcadag.license.controller;
 import com.arcadag.license.model.License;
 import com.arcadag.license.service.LicenseService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.Random;
+import java.util.concurrent.TimeoutException;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -15,6 +19,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping(value = "v1/organization/{organizationId}/license")
 @RequiredArgsConstructor
+@Slf4j
 public class LicenseController {
 
     private final LicenseService licenseService;
@@ -62,7 +67,10 @@ public class LicenseController {
             @PathVariable("clientType") String clientType) {
         return licenseService.getLicense(licenseId, organizationId, clientType);
     }
-
-
+    @GetMapping
+    public List<License> getLicenses(@PathVariable("organizationId") String organizationId) throws TimeoutException {
+        log.debug("LicenseServiceController Correlation id: {}", organizationId);
+        return licenseService.getLicensesByOrganization(organizationId);
+    }
 
 }
