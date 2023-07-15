@@ -6,3 +6,23 @@ spring:
   cloud:
     config:
       uri: http://localhost:8071
+resilience4j:
+  circuitbreaker:
+    instances:
+      licenseService:
+        register-health-indicator: true
+        wait-duration-in-open-state: 10s
+        failure-rate-threshold: 50
+        record-exceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.ResourceAccessException
+      organizationService:
+        register-health-indicator: true
+        wait-duration-in-open-state: 20s
+        failure-rate-threshold: 60
+
+
+
+
