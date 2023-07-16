@@ -87,12 +87,11 @@ public class LicenseService {
         return license.withComment(config.getProperty());
     }
     @CircuitBreaker(name = "licenseService", fallbackMethod = "buildFallbackLicenseList")
-    @Bulkhead(name = "bulkheadLicenseService", type = Bulkhead.Type.THREADPOOL, fallbackMethod = "buildFallbackLicenseList")
+    @Bulkhead(name = "bulkheadLicenseService", type = Bulkhead.Type.SEMAPHORE, fallbackMethod = "buildFallbackLicenseList")
     @Retry(name = "retryLicenseService", fallbackMethod = "buildFallbackLicenseList")
     @RateLimiter(name = "licenseService", fallbackMethod = "buildFallbackLicenseList")
-    public List<License> getLicensesByOrganization(String organizationId) throws TimeoutException {
+    public List<License> getLicensesByOrganization(String organizationId) {
         log.debug("getLicensesByOrganization Correlation id: {}", UserContextHolder.getContext().getCorrelationId());
-        randomlyRunLong();
         return licenseRepository.findByOrganizationId(organizationId);
     }
 
@@ -129,19 +128,4 @@ public class LicenseService {
 
         return organization;
     }
-    private void randomlyRunLong() throws TimeoutException {
-        Random rand = new Random();
-        int randomNum = rand.nextInt((3 - 1) + 1) + 1;
-        if (randomNum == 3) sleep();
-    }
-    private void sleep() throws TimeoutException{
-        try {
-            System.out.println("Sleep");
-            Thread.sleep(5000);
-            throw new java.util.concurrent.TimeoutException();
-        } catch (InterruptedException e) {
-            log.error(e.getMessage());
-        }
-    }
-
 }
