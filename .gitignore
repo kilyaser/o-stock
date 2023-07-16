@@ -11,3 +11,6 @@
 /organization-service/mvnw.cmd
 /organization-service/mvnw
 /organization-service/.mvn/
+/gatewayserver/mvnw.cmd
+/gatewayserver/mvnw
+/gatewayserver/.mvn/
