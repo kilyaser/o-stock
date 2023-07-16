@@ -2,6 +2,7 @@ package com.arcadag.license.controller;
 
 import com.arcadag.license.model.License;
 import com.arcadag.license.service.LicenseService;
+import com.arcadag.license.utils.UserContextHolder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -69,7 +70,7 @@ public class LicenseController {
     }
     @GetMapping
     public List<License> getLicenses(@PathVariable("organizationId") String organizationId) throws TimeoutException {
-        log.debug("LicenseServiceController Correlation id: {}", organizationId);
+        log.debug("LicenseServiceController Correlation id: {}", UserContextHolder.getContext().getCorrelationId());
         return licenseService.getLicensesByOrganization(organizationId);
     }
 
