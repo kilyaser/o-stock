@@ -33,7 +33,7 @@ public class OrganizationService {
     	organizationRepository.save(organization);
     }
 
-    public void delete(Organization organization){
-    	organizationRepository.deleteById(organization.getId());
+    public void delete(String id){
+    	organizationRepository.deleteById(id);
     }
 }

@@ -53,5 +53,5 @@ logging:
   level:
     com.netflix: WARN
     org.springframework.web: WARN
-    com.arcadag: DEBUG
+    com.arcadag: INFO
 
