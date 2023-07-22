@@ -1,6 +1,8 @@
 package com.arcadag.license;
 
+import com.arcadag.events.model.OrganizationChangeModel;
 import com.arcadag.license.utils.UserContextInterceptor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -21,6 +23,7 @@ import java.util.Locale;
 @RefreshScope
 @EnableDiscoveryClient
 @EnableFeignClients
+@Slf4j
 public class LicensingServiceApplication {
 
     public static void main(String[] args) {
@@ -53,6 +56,10 @@ public class LicensingServiceApplication {
             restTemplate.setInterceptors(interceptors);
         }
         return restTemplate;
+    }
+
+    public void loggerSink(OrganizationChangeModel orgChange) {
+        log.debug("Received an {} event for organization id {}", orgChange.getAction(), orgChange.getOrganizationId());
     }
 
 }
