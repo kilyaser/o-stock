@@ -1,35 +1,37 @@
 package com.arcadag.gatewayserver.filters;
 
+import brave.Span;
+import brave.Tracer;
+import brave.propagation.TraceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferFactory;
-import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class ResponseFilter {
-
-    private final FilterUtils filterUtils;
+    private final Tracer tracer;
     @Bean
     public GlobalFilter postGlobalFilter() {
-        return ((exchange, chain) -> chain.filter(exchange).then(Mono.fromRunnable(() -> {
-            HttpHeaders requestHeaders = exchange.getRequest().getHeaders();
-            String correlationId = filterUtils.getCorrelationId(requestHeaders);
-            log.debug("Adding the correlation id to the outbound headers. {}", correlationId);
-            exchange.getResponse().getHeaders().add(FilterUtils.CORRELATION_ID, correlationId);
-            log.debug("Completing outgoing request for {}.", exchange.getRequest().getURI());
-        })));
+        return (exchange, chain) -> {
+            final String traceId = Optional.ofNullable(tracer.currentSpan())
+                    .map(Span::context)
+                    .map(TraceContext::traceIdString)
+                    .orElse("null");
+
+            return chain.filter(exchange).then(Mono.fromRunnable(() -> {
+                log.debug("Adding the correlation id to the outbound headers. {}", traceId);
+                exchange.getResponse().getHeaders().add(FilterUtils.CORRELATION_ID, traceId);
+                log.debug("Completing outgoing request for {}.",
+                        exchange.getRequest().getURI());
+            }));
+        };
     }
 }

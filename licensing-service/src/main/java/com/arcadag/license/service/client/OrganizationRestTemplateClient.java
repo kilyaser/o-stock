@@ -1,5 +1,6 @@
 package com.arcadag.license.service.client;
 
+
 import com.arcadag.license.model.Organization;
 import com.arcadag.license.repository.OrganizationRedisRepository;
 import com.arcadag.license.utils.UserContext;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Component;
 public class OrganizationRestTemplateClient {
 
     private final KeycloakRestTemplate restTemplate;
-
     private final OrganizationRedisRepository redisRepository;
     @Value("${gateway.host}")
     private String host;
